@@ -1,0 +1,55 @@
+:root {
+  @media (prefers-color-scheme: light) {
+    @each $key, $value in map-get($themes, light) {
+      #{$key}: #{$value};
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    @each $key, $value in map-get($themes, dark) {
+      #{$key}: #{$value};
+    }
+  }
+
+  &[theme='light'] {
+    @each $key, $value in map-get($themes, light) {
+      #{$key}: #{$value};
+    }
+  }
+
+  &[theme='dark'] {
+    @each $key, $value in map-get($themes, dark) {
+      #{$key}: #{$value};
+    }
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  font-weight: normal;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+
+  min-height: 100vh;
+
+  background: var(--bg-gradient);
+  color: var(--text-basic);
+
+  font-family: $ff-default;
+  font-size: $fz-default;
+  line-height: 1.2;
+
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  -webkit-tap-highlight-color: transparent;
+
+  scroll-behavior: smooth;
+}
