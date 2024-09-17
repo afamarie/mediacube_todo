@@ -49,6 +49,8 @@ body {
   background: var(--bg-gradient);
   color: var(--text-basic);
 
+  transition: color var(--trans-600);
+
   font-family: var(--ff-default);
   font-size: var(--fz-default);
   line-height: 1.2;
