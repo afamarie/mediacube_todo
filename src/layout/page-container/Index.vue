@@ -18,17 +18,17 @@
 </template>
 
 <script setup lang="ts">
-import ThemeSwitcher from "@/components/theme-switcher/Index.vue";
+import ThemeSwitcher from '@/components/theme-switcher/Index.vue'
 
-const imgUrl = new URL("@/assets/images/illustration.svg", import.meta.url).href;
+const imgUrl = new URL('@/assets/images/illustration.svg', import.meta.url).href
 
 defineProps<{
-  header: string;
-}>();
+  header: string
+}>()
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/mixins.scss";
+@import '@/assets/styles/mixins.scss';
 
 .page-container {
   display: flex;
