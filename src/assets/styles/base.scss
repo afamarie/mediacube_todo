@@ -52,4 +52,10 @@ body {
   -webkit-tap-highlight-color: transparent;
 
   scroll-behavior: smooth;
+
+  .app {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
 }

@@ -1,9 +1,9 @@
+<template>
+  <PageContainer header="Today I need to"> something </PageContainer>
+</template>
+
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import PageContainer from '@/layout/page-container/Index.vue'
 </script>
 
-<template>
-  <main>
-    <TheWelcome />
-  </main>
-</template>
+<style scoped lang="scss"></style>
