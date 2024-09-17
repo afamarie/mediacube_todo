@@ -36,13 +36,22 @@ defineProps<{
   flex-grow: 1;
 
   margin: 0 auto;
-  padding: 2em;
-  max-width: 1440px;
+  padding: 1em;
+  width: 100%;
+  max-width: 1140px;
+
+  header {
+    display: flex;
+    justify-content: flex-end;
+  }
 
   section {
-    margin: auto;
+    margin: clamp(1rem, 5%, 5rem) auto;
     padding: 2em;
+    flex-grow: 1;
+
     width: 100%;
+    max-width: 730px;
 
     border-radius: 1.5rem;
     background-color: var(--bg-basic);

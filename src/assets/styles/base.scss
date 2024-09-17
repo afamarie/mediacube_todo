@@ -22,6 +22,14 @@
       #{$key}: #{$value};
     }
   }
+
+  @each $key, $value in $fonts {
+    #{$key}: #{$value};
+  }
+
+  @each $key, $value in $trans {
+    #{$key}: #{$value};
+  }
 }
 
 *,
@@ -41,8 +49,8 @@ body {
   background: var(--bg-gradient);
   color: var(--text-basic);
 
-  font-family: $ff-default;
-  font-size: $fz-default;
+  font-family: var(--ff-default);
+  font-size: var(--fz-default);
   line-height: 1.2;
 
   text-rendering: optimizeLegibility;
