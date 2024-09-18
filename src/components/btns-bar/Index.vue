@@ -61,6 +61,7 @@ defineProps<{
     background-color: transparent;
     border: 1px solid transparent;
     border-radius: 0.5rem;
+    color: var(--txt-basic);
 
     cursor: pointer;
 
