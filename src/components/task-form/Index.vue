@@ -1,21 +1,13 @@
 <template>
-  <form class="task-form">
+  <form class="task-form" @submit.prevent="$emit('submit')">
     <input
       v-model="model"
       :placeholder="placeholder"
       :maxlength="maxlength"
       :aria-label="ariaLabel"
       :disabled="disabled"
-      @keydown.enter="$emit('submit')"
     />
-    <button
-      v-show="showBtn"
-      type="submit"
-      :disabled="btnDisabled"
-      @click="$emit('submit')"
-    >
-      Submit
-    </button>
+    <button v-show="showBtn" type="submit" :disabled="btnDisabled">Submit</button>
     <div v-show="computedError" class="error">{{ computedError }}</div>
   </form>
 </template>
