@@ -2,9 +2,9 @@
   <section class="tasks-dashboard">
     <div class="dashboard-section">
       <h3>Completed</h3>
-      <p class="caption">{{ getCaption(completed) }}</p>
-      <div class="indicator completed">
-        <span :style="{ width: getWidth(completed) }"></span>
+      <p class="caption">{{ getCaption(done) }}</p>
+      <div class="indicator done">
+        <span :style="{ width: getWidth(done) }"></span>
       </div>
     </div>
     <div class="dashboard-section">
@@ -19,42 +19,42 @@
 
 <script setup lang="ts">
 const props = defineProps({
-  completed: {
+  done: {
     type: Number,
-    default: 0,
+    default: 0
   },
   active: {
     type: Number,
-    default: 0,
-  },
-});
+    default: 0
+  }
+})
 
 const getCaption = (value: number): string => {
-  let result = `${value} tasks`;
+  let result = `${value} tasks`
 
   if (value === 0) {
-    result = "No tasks";
+    result = 'No tasks'
   } else if (value === 1) {
-    result = "1 task";
+    result = '1 task'
   }
 
-  return result;
-};
+  return result
+}
 
 const getWidth = (value: number): string => {
-  const total = props.active + props.completed;
+  const total = props.active + props.done
 
   if (total === 0) {
-    return "0%";
+    return '0%'
   }
 
-  const percentage = (value / total) * 100;
-  return Math.round(percentage) + "%";
-};
+  const percentage = (value / total) * 100
+  return Math.round(percentage) + '%'
+}
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/mixins.scss";
+@import '@/assets/styles/mixins.scss';
 
 .tasks-dashboard {
   display: grid;
@@ -111,7 +111,7 @@ const getWidth = (value: number): string => {
       border-radius: 2px;
     }
 
-    &.completed > span {
+    &.done > span {
       background-color: var(--done);
     }
 

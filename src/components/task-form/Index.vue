@@ -1,7 +1,7 @@
 <template>
-  <form class="task-form" @submit.prevent="$emit('submit')">
+  <form class="task-form" @submit.prevent="onFormSubmit">
     <input
-      v-model="model"
+      v-model="newTask"
       :placeholder="placeholder"
       :maxlength="maxlength"
       :aria-label="ariaLabel"
@@ -13,55 +13,47 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed } from 'vue'
 
 const props = defineProps({
   placeholder: String,
   maxlength: {
     type: Number,
-    default: 66,
+    default: 66
   },
   ariaLabel: String,
   disabled: Boolean,
   error: {
     type: String,
-    default: null,
-  },
-  modelValue: {
-    type: String,
-    default: "",
-  },
-});
+    default: null
+  }
+})
 
-const emit = defineEmits(["update:modelValue", "submit"]);
+const newTask = defineModel<string>('newTask')
 
-const model = computed<string>({
-  get() {
-    return props.modelValue;
-  },
-  set(value) {
-    emit("update:modelValue", value);
-  },
-});
+const emit = defineEmits(['submit'])
+
+const onFormSubmit = () => {
+  emit('submit')
+  newTask.value = ''
+}
 
 const showBtn = computed<boolean>(() => {
-  return model.value.length > 0;
-});
+  return Boolean(newTask.value && newTask.value?.length > 0)
+})
 
 const btnDisabled = computed<boolean>(() => {
-  return Boolean(computedError.value) || props.disabled;
-});
+  return Boolean(computedError.value) || props.disabled
+})
 
 const computedError = computed<string | null>(() => {
-  const isValid = props.modelValue ? props.maxlength > props.modelValue.length : true;
-  return props.error || isValid
-    ? null
-    : `Character limit is ${props.maxlength - 1} characters`;
-});
+  const isValid = !newTask.value || newTask.value?.length <= props.maxlength
+  return props.error || (isValid ? null : `Character limit is ${props.maxlength} characters`)
+})
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/mixins.scss";
+@import '@/assets/styles/mixins.scss';
 
 .task-form {
   display: flex;

@@ -18,47 +18,48 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import DragDropIcon from "@/assets/icons/drag-drop.svg";
+import { ref } from 'vue'
+import DragDropIcon from '@/assets/icons/drag-drop.svg'
 
 const props = defineProps<{
-  list: any[];
-  filterFunc?: (i: number, item: any) => {};
-}>();
+  filterFunc?: (i: number, item: any) => {}
+}>()
 
-const emit = defineEmits(["update:list"]);
+const list = defineModel<any[]>('list')
+const emit = defineEmits(['replace'])
 
-const draggedIndex = ref<number | null>(null);
+const draggedIndex = ref<number | null>(null)
 
 const onDragStart = (i: number) => {
-  draggedIndex.value = i;
-};
+  draggedIndex.value = i
+}
 
 const onDragOver = (i: number) => {
-  if (draggedIndex.value === null || draggedIndex.value === i) return;
+  if (draggedIndex.value === null || draggedIndex.value === i || !list.value) return
 
-  const localList = props.list;
+  const temp = list.value[i]
+  list.value[i] = list.value[draggedIndex.value]
+  list.value[draggedIndex.value] = temp
 
-  const temp = localList[i];
-  localList[i] = localList[draggedIndex.value];
-  localList[draggedIndex.value] = temp;
+  draggedIndex.value = i
 
-  draggedIndex.value = i;
-
-  emit("update:list", localList);
-};
+  emit('replace')
+}
 
 const onDrop = (i: number) => {
-  draggedIndex.value = null;
-};
+  draggedIndex.value = null
+}
 
 const onDragEnd = () => {
-  draggedIndex.value = null;
-};
+  draggedIndex.value = null
+}
 </script>
 
 <style scoped lang="scss">
 .drag-drop-list {
+  display: flex;
+  flex-direction: column-reverse;
+
   list-style: none;
   padding: 1em;
 
