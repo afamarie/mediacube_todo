@@ -46,6 +46,9 @@ defineProps<{
   }
 
   section {
+    display: flex;
+    flex-direction: column;
+
     margin: clamp(1rem, 5%, 5rem) auto;
     padding: 2em;
     flex-grow: 1;
@@ -56,12 +59,13 @@ defineProps<{
     border-radius: 1.5rem;
     background-color: var(--bg-basic);
 
-    text-align: center;
-
     transition: background-color var(--trans-default);
   }
 
   .illustration {
+    margin-left: auto;
+    margin-right: auto;
+
     width: clamp(4rem, 12.5vw, 11.25rem);
     height: clamp(4rem, 12.5vw, 11.25rem);
 
@@ -70,6 +74,7 @@ defineProps<{
 
   h1 {
     @include header24;
+    text-align: center;
   }
 }
 </style>
