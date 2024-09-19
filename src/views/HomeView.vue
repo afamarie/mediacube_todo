@@ -6,7 +6,7 @@
       ariaLabel="Add new todo"
       @submit="store.addTask(newTask)"
     />
-    <DragDropList :list="store.tasks" :filterFunc="filterFunc">
+    <DragDropList :list="store.tasks" :filterFunc="filterQuery !== 'all' ? filterFunc : undefined">
       <template #item="{ item: item }">
         <EditableCheckbox
           v-model:checked="item.done"
@@ -20,6 +20,7 @@
     </DragDropList>
     <TasksDashboard :active="store.totalActive" :done="store.totalDone" />
     <BtnsBar v-if="store.tasks.length > 0" :buttons="buttons" />
+    <Caption v-else />
   </PageContainer>
 </template>
 
@@ -32,6 +33,7 @@ import DragDropList from '@/components/ui/drag-drop-list/Index.vue'
 import EditableCheckbox from '@/components/ui/editable-checkbox/Index.vue'
 import TasksDashboard from '@/components/tasks-dashboard/Index.vue'
 import BtnsBar from '@/components/btns-bar/Index.vue'
+import Caption from '@/components/caption/Index.vue'
 
 import { type Task } from '@/_config/models'
 
@@ -74,6 +76,7 @@ const buttons = computed(() => {
       name: 'Clear completed',
       action: () => {
         store.clearDone()
+        filterQuery.value = 'all'
       },
       show: store.tasks.some((el) => el.done)
     }
@@ -91,8 +94,6 @@ const filterFunc = (item: Task): boolean => {
       return !item.done
     case 'done':
       return item.done
-    case 'all':
-      return true
     default:
       return true
   }
