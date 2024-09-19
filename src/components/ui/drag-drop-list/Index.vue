@@ -1,70 +1,32 @@
 <template>
-  <ul class="drag-drop-list">
-    <li
-      v-for="(item, i) in list"
-      :key="i"
-      :class="{ dragged: i === draggedIndex }"
-      v-show="filterFunc ? filterFunc(i, item) : true"
-      draggable="true"
-      @dragover.prevent="onDragOver(i)"
-      @dragend="onDragEnd"
-      @dragstart="onDragStart(i)"
-      @drop="onDrop(i)"
-    >
+  <VueDraggable class="drag-drop-list" v-model="list" tag="ul" :animation="150" ghost-class="ghost">
+    <li v-for="(item, i) in list" :key="i" v-show="filterFunc ? filterFunc(i, item) : true">
       <DragDropIcon class="drag-icon" width="16" height="16" aria-hidden="true" />
       <slot name="item" :item="item" :index="i" />
     </li>
-  </ul>
+  </VueDraggable>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import DragDropIcon from '@/assets/icons/drag-drop.svg'
+import { VueDraggable } from 'vue-draggable-plus'
 
 const props = defineProps<{
   filterFunc?: (i: number, item: any) => {}
 }>()
 
-const list = defineModel<any[]>('list')
-const emit = defineEmits(['replace'])
-
-const draggedIndex = ref<number | null>(null)
-
-const onDragStart = (i: number) => {
-  draggedIndex.value = i
-}
-
-const onDragOver = (i: number) => {
-  if (draggedIndex.value === null || draggedIndex.value === i || !list.value) return
-
-  const temp = list.value[i]
-  list.value[i] = list.value[draggedIndex.value]
-  list.value[draggedIndex.value] = temp
-
-  draggedIndex.value = i
-
-  emit('replace')
-}
-
-const onDrop = (i: number) => {
-  draggedIndex.value = null
-}
-
-const onDragEnd = () => {
-  draggedIndex.value = null
-}
+const list = defineModel<any[]>('list', { default: [] })
 </script>
 
 <style scoped lang="scss">
 .drag-drop-list {
-  display: flex;
-  flex-direction: column-reverse;
-
-  list-style: none;
-  padding: 1em;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+  padding-left: 0;
 
   li + li {
-    margin-bottom: 1rem;
+    margin-top: 0.5rem;
   }
 
   li {
@@ -73,11 +35,12 @@ const onDragEnd = () => {
     display: flex;
     flex-wrap: wrap;
 
-    padding-left: 1rem;
+    padding: 0.25rem 0.25rem 0.25rem 2.25rem;
+    border-radius: 4px;
   }
 
-  li.dragged {
-    background-color: var(--bg-basic);
+  li.ghost {
+    background-color: var(--bg-transparent);
   }
 
   .drag-icon {
@@ -92,7 +55,7 @@ const onDragEnd = () => {
 
     top: 0;
     bottom: 0;
-    left: -1rem;
+    left: 0;
 
     fill: var(--text-transparent);
     opacity: 0;
@@ -100,9 +63,18 @@ const onDragEnd = () => {
     cursor: pointer;
   }
 
-  li:hover > .drag-icon,
-  li.dragged > .drag-icon {
+  li:not(.ghost):hover > .drag-icon {
     opacity: 1;
+  }
+
+  @media (max-width: 767px) {
+    li {
+      padding-left: 0.25rem;
+    }
+
+    .drag-icon {
+      display: none;
+    }
   }
 }
 </style>
