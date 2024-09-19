@@ -1,18 +1,11 @@
 import { defineStore } from 'pinia'
-
-export interface Task {
-  id: string
-  body: string
-  done: boolean
-}
+import { type Task } from '@/_config/models'
 
 export const useTasksStore = defineStore('tasks', {
   state: () => ({
     tasks: [] as Task[]
   }),
   getters: {
-    activeTasks: (state) => state.tasks.filter((task) => !task.done),
-    doneTasks: (state) => state.tasks.filter((task) => task.done),
     totalActive: (state) => state.tasks.filter((task) => !task.done).length,
     totalDone: (state) => state.tasks.filter((task) => task.done).length
   },
@@ -23,7 +16,7 @@ export const useTasksStore = defineStore('tasks', {
         body: taskBody,
         done: false
       }
-      this.tasks.push(newTask)
+      this.tasks.unshift(newTask)
     },
     toggleTaskStatus(taskId: string) {
       const task = this.tasks.find((task) => task.id === taskId)
@@ -42,6 +35,11 @@ export const useTasksStore = defineStore('tasks', {
     },
     clearDone() {
       this.tasks = this.tasks.filter((task) => !task.done)
+    },
+    markAllDone() {
+      this.tasks.forEach((task) => {
+        task.done = true
+      })
     },
     updateList(newList: Task[]) {
       this.tasks = newList

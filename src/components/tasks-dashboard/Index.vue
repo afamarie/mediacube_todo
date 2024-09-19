@@ -69,7 +69,6 @@ const getWidth = (value: number): string => {
     flex-direction: column;
 
     padding: 1rem;
-    text-align: left;
 
     border-radius: 1rem;
     background-color: var(--bg-transparent);

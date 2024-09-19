@@ -1,13 +1,7 @@
 <template>
   <div class="btns-bar">
-    <div
-      class="btn-wrapper"
-      v-for="(btn, name) in buttons"
-      :key="name"
-      :disabled="btn.disabled"
-      v-show="btn.show"
-    >
-      <button @click="btn.action">
+    <div class="btn-wrapper" v-for="(btn, name) in buttons" :key="name" v-show="btn.show">
+      <button :disabled="btn.disabled" :class="{ selected: btn.selected }" @click="btn.action">
         {{ btn.name }}
       </button>
     </div>
@@ -17,22 +11,22 @@
 <script setup lang="ts">
 interface Buttons {
   [key: string]: {
-    name: string;
-    action: () => void;
-    show: boolean;
-    disabled?: boolean;
-  };
+    name: string
+    action: () => void
+    show: boolean
+    disabled?: boolean
+    selected?: boolean
+  }
 }
 
 defineProps<{
-  buttons: Buttons;
-  disabled?: boolean;
-  checked?: boolean;
-}>();
+  buttons: Buttons
+  disabled?: boolean
+}>()
 </script>
 
 <style scoped lang="scss">
-@import "@/assets/styles/mixins.scss";
+@import '@/assets/styles/mixins.scss';
 
 .btns-bar {
   display: flex;
@@ -67,12 +61,8 @@ defineProps<{
 
     transition: all var(--trans-default);
 
-    &:hover:not(:disabled) {
-      border-color: var(--btn-outline);
-    }
-
     &:active:not(:disabled),
-    &.checked:not(:disabled) {
+    &.selected:not(:disabled) {
       background-color: var(--btn-bg);
       color: var(--btn-text);
     }
@@ -80,6 +70,12 @@ defineProps<{
     &:disabled {
       color: var(--txt-neutral);
       cursor: not-allowed;
+    }
+
+    @media hover {
+      &:hover:not(:disabled) {
+        border-color: var(--btn-outline);
+      }
     }
   }
 

@@ -1,6 +1,13 @@
 <template>
-  <VueDraggable class="drag-drop-list" v-model="list" tag="ul" :animation="150" ghost-class="ghost">
-    <li v-for="(item, i) in list" :key="i" v-show="filterFunc ? filterFunc(i, item) : true">
+  <VueDraggable
+    class="drag-drop-list"
+    v-model="list"
+    tag="ul"
+    :animation="150"
+    ghost-class="ghost"
+    direction="vertical"
+  >
+    <li v-for="(item, i) in list" :key="i" v-show="filterFunc ? filterFunc(item) : true">
       <DragDropIcon class="drag-icon" width="16" height="16" aria-hidden="true" />
       <slot name="item" :item="item" :index="i" />
     </li>
@@ -13,7 +20,7 @@ import DragDropIcon from '@/assets/icons/drag-drop.svg'
 import { VueDraggable } from 'vue-draggable-plus'
 
 const props = defineProps<{
-  filterFunc?: (i: number, item: any) => {}
+  filterFunc?: (item: any) => boolean
 }>()
 
 const list = defineModel<any[]>('list', { default: [] })
@@ -37,6 +44,9 @@ const list = defineModel<any[]>('list', { default: [] })
 
     padding: 0.25rem 0.25rem 0.25rem 2.25rem;
     border-radius: 4px;
+
+    max-width: 100%;
+    overflow-x: auto;
   }
 
   li.ghost {

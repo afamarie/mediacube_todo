@@ -27,7 +27,6 @@
 import { nextTick, ref } from 'vue'
 import PencilIcon from '@/assets/icons/pencil.svg'
 import BinIcon from '@/assets/icons/bin.svg'
-import CeckIcon from '@/assets/icons/checkmark-plain.svg?url'
 
 const props = defineProps<{
   disabled?: boolean
@@ -98,9 +97,6 @@ const rejectEdit = (event: Event) => {
   flex: 1 1 100%;
 
   label {
-    max-width: 100%;
-    overflow-x: auto;
-
     display: flex;
     align-items: center;
   }
