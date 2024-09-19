@@ -1,8 +1,16 @@
 <template>
   <ul class="drag-drop-list">
-    <li v-for="(item, i) in list" :key="i" :class="{ dragged: i === draggedIndex }"
-      v-show="filterFunc ? filterFunc(i, item) : true" draggable="true" @dragover.prevent="onDragOver(i)"
-      @dragend="onDragEnd" @dragstart="onDragStart(i)" @drop="onDrop(i)">
+    <li
+      v-for="(item, i) in list"
+      :key="i"
+      :class="{ dragged: i === draggedIndex }"
+      v-show="filterFunc ? filterFunc(i, item) : true"
+      draggable="true"
+      @dragover.prevent="onDragOver(i)"
+      @dragend="onDragEnd"
+      @dragstart="onDragStart(i)"
+      @drop="onDrop(i)"
+    >
       <DragDropIcon class="drag-icon" width="16" height="16" aria-hidden="true" />
       <slot name="item" :item="item" :index="i" />
     </li>
@@ -55,12 +63,17 @@ const onDragEnd = () => {
   list-style: none;
   padding: 1em;
 
-  li+li {
+  li + li {
     margin-bottom: 1rem;
   }
 
   li {
     position: relative;
+
+    display: flex;
+    flex-wrap: wrap;
+
+    padding-left: 1rem;
   }
 
   li.dragged {
@@ -70,11 +83,15 @@ const onDragEnd = () => {
   .drag-icon {
     position: absolute;
 
+    margin-top: auto;
+    margin-bottom: auto;
+
     padding: 0.25rem;
     width: 2rem;
     height: 2rem;
 
-    top: -0.5rem;
+    top: 0;
+    bottom: 0;
     left: -1rem;
 
     fill: var(--text-transparent);
@@ -83,8 +100,8 @@ const onDragEnd = () => {
     cursor: pointer;
   }
 
-  li:hover>.drag-icon,
-  li.dragged>.drag-icon {
+  li:hover > .drag-icon,
+  li.dragged > .drag-icon {
     opacity: 1;
   }
 }

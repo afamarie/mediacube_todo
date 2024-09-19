@@ -1,13 +1,17 @@
 $themes: (
-  light: ( // backgrounds
+  light: (
+    // backgrounds
     --bg-basic: #ffffff,
-    --bg-gradient: linear-gradient(304deg,
-      #f0c3fc -53.74%,
-      #d7befc -4.64%,
-      #bcb1fc 40.96%,
-      #a1aefc 83.05%,
-      #94bdfc 127.47%,
-      #8ec5fc 170.73%),
+    --bg-gradient:
+      linear-gradient(
+        304deg,
+        #f0c3fc -53.74%,
+        #d7befc -4.64%,
+        #bcb1fc 40.96%,
+        #a1aefc 83.05%,
+        #94bdfc 127.47%,
+        #8ec5fc 170.73%
+      ),
     --bg-transparent: #2024270d,
     // texts
     --text-basic: #202427,
@@ -23,16 +27,21 @@ $themes: (
     --danger: #ec3535,
     // indicators
     --done: #5d5fef,
-    --active: #ef5da8),
-  dark: ( // backgrounds
+    --active: #ef5da8
+  ),
+  dark: (
+    // backgrounds
     --bg-basic: #000,
-    --bg-gradient: linear-gradient(304deg,
-      darken(#f0c3fc, 50%) -53.74%,
-      darken(#d7befc, 50%) -4.64%,
-      darken(#bcb1fc, 50%) 40.96%,
-      darken(#a1aefc, 50%) 83.05%,
-      darken(#94bdfc, 50%) 127.47%,
-      darken(#8ec5fc, 50%) 170.73%),
+    --bg-gradient:
+      linear-gradient(
+        304deg,
+        darken(#f0c3fc, 50%) -53.74%,
+        darken(#d7befc, 50%) -4.64%,
+        darken(#bcb1fc, 50%) 40.96%,
+        darken(#a1aefc, 50%) 83.05%,
+        darken(#94bdfc, 50%) 127.47%,
+        darken(#8ec5fc, 50%) 170.73%
+      ),
     --bg-transparent: #bcd2e30d,
     // texts
     --text-basic: #d7e3ed,
@@ -46,7 +55,9 @@ $themes: (
     --btn-outline: #2578f4,
     // alerts
     --danger: #ec3535,
+    --success: #35ec35,
     // indicators
     --done: #5d5fef,
-    --progress: #ef5da8)
+    --progress: #ef5da8
+  )
 );
