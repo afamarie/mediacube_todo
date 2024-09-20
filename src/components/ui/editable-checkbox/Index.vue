@@ -2,18 +2,20 @@
   <div class="editable-checkbox">
     <label>
       <input v-model="checked" :value="value" :name="name" type="checkbox" :disabled="disabled" />
-      <span
-        class="label"
-        :contenteditable="editable"
-        @focusout="submitEdit"
-        @keydown.enter="submitEdit"
-        @keydown.escape="rejectEdit"
-        ref="labelRef"
-        >{{ value }}</span
-      >
+      <span class="editable-wrapper">
+        <span
+          class="editable"
+          :contenteditable="editable"
+          @focusout="submitEdit"
+          @keydown.enter="submitEdit"
+          @keydown.escape="rejectEdit"
+          ref="editableRef"
+          >{{ value }}
+        </span>
+      </span>
     </label>
     <div class="btns">
-      <button class="edit" :class="{ isEditing }" @click="edit">
+      <button class="edit" :class="{ editable }" @click="edit">
         <PencilIcon />
       </button>
       <button class="delete" @click="$emit('delete')">
@@ -43,46 +45,44 @@ const checked = defineModel<boolean>('checked')
 const value = defineModel<string>('value')
 
 const editable = ref<boolean>()
-const labelRef = ref<HTMLElement | null>(null)
-const isEditing = ref<boolean>()
+const editableRef = ref<HTMLElement | null>(null)
 
-const switchIsEditing = () => {
-  isEditing.value = !isEditing.value
+const switchIsEditable = () => {
+  editable.value = !editable.value
 }
 
 const edit = () => {
-  editable.value = true
+  switchIsEditable()
   // set the caret (cursor) position in the editable label
   nextTick(() => {
-    labelRef.value?.focus()
+    editableRef.value?.focus()
 
     const range = document.createRange()
     const selection = window.getSelection()
 
-    range.selectNodeContents(labelRef.value as Node)
+    range.selectNodeContents(editableRef.value as Node)
     range.collapse(false)
 
     selection?.removeAllRanges()
     selection?.addRange(range)
-
-    switchIsEditing()
   })
 }
 
 const submitEdit = (event: Event) => {
-  const editedLabel = (event.target as HTMLElement)?.innerText.trim()
-  labelRef.value?.blur()
+  const edited = (event.target as HTMLElement)?.innerText.trim()
+  editableRef.value?.blur()
 
-  switchIsEditing()
+  switchIsEditable()
 
-  emit('update:value', editedLabel)
+  emit('update:value', edited)
 }
 
 const rejectEdit = (event: Event) => {
   const target = event.target as HTMLElement
   target.innerText = value.value || ''
-  labelRef.value?.blur()
-  switchIsEditing()
+  editableRef.value?.blur()
+
+  switchIsEditable()
 }
 </script>
 
@@ -90,30 +90,36 @@ const rejectEdit = (event: Event) => {
 @import '@/assets/styles/mixins.scss';
 
 .editable-checkbox {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 1rem;
-
-  flex: 1 1 100%;
+  display: flex;
+  justify-content: space-between;
+  flex-grow: 1;
 
   label {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1.6rem 1fr;
     align-items: center;
+    gap: 0.5rem;
   }
 
-  .label {
+  .editable-wrapper {
     @include body14;
 
     padding: 0.25rem;
+    max-width: 100%;
+    overflow-x: auto;
+
     color: var(--text-basic);
   }
 
-  .label:focus {
-    outline: none;
+  .editable-wrapper:focus-within {
     background-color: var(--bg-transparent);
   }
 
-  input:checked + .label {
+  .editable:focus {
+    outline: none;
+  }
+
+  input:checked + .editable {
     color: var(--text-transparent);
   }
 
@@ -122,7 +128,6 @@ const rejectEdit = (event: Event) => {
 
     width: 1.6rem;
     height: 1.6rem;
-    margin-right: 0.8rem;
 
     border: 1px solid var(--text-neutral);
     border-radius: 4px;
@@ -171,7 +176,7 @@ const rejectEdit = (event: Event) => {
       color: var(--text-transparent);
     }
 
-    &.isEditing {
+    &.editable {
       color: var(--success);
     }
 
