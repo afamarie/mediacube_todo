@@ -57,8 +57,9 @@ const removeAlert = (id: string) => {
     margin: 0.5rem 0;
 
     border-radius: 0.5rem;
-    background-color: var(--bg-transparent);
-    color: var(--bg-basic);
+    background-color: var(--bg-basic);
+    color: var(--text-basic);
+    box-shadow: -5px -1px 10px 0 var(--bg-transparent);
 
     animation: fallIn 0.5s ease;
 
@@ -82,9 +83,13 @@ const removeAlert = (id: string) => {
 
     background-color: transparent;
     border: none;
-    color: var(--bg-basic);
+    color: var(--text-basic);
 
     cursor: pointer;
+
+    @media (max-width: 767px) {
+      display: none;
+    }
   }
 
   .fade-enter-active,

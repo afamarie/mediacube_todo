@@ -12,7 +12,9 @@
         alt="Mediacube Todo Application Logo"
       />
       <h1>{{ header }}</h1>
-      <slot />
+      <div class="content-wrapper">
+        <slot />
+      </div>
     </section>
   </main>
 </template>
@@ -36,20 +38,23 @@ defineProps<{
   flex-grow: 1;
 
   margin: 0 auto;
-  padding: 1em;
+  padding: 0 1em;
   width: 100%;
   max-width: 1140px;
 
   header {
     display: flex;
     justify-content: flex-end;
+
+    padding: 1rem 0;
   }
 
   section {
     display: flex;
     flex-direction: column;
+    align-items: center;
 
-    margin: clamp(1rem, 5%, 5rem) auto;
+    margin: auto;
     padding: 2em;
     flex-grow: 1;
 
@@ -60,6 +65,11 @@ defineProps<{
     background-color: var(--bg-basic);
 
     transition: background-color var(--trans-default);
+
+    @media (max-width: 767px) {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
   }
 
   .illustration {
@@ -70,11 +80,28 @@ defineProps<{
     height: clamp(4rem, 12.5vw, 11.25rem);
 
     filter: drop-shadow(5px 5px 5px rgba(255, 255, 255, 0.2));
+
+    @media (max-width: 767px) {
+      width: clamp(4rem, 45vw, 8rem);
+      height: clamp(4rem, 45vw, 8rem);
+    }
   }
 
   h1 {
     @include header24;
     text-align: center;
+  }
+
+  .content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    width: clamp(228px, 50vw, 410px);
+
+    @media (max-width: 767px) {
+      width: 100%;
+    }
   }
 }
 </style>

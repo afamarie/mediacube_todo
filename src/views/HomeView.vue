@@ -1,27 +1,29 @@
 <template>
-  <PageContainer header="Today I need to">
+  <PageContainer class="home-view" header="Today I need to">
     <TaskForm
       v-model:newTask="newTask"
       placeholder="Add new todo..."
       ariaLabel="Add new todo"
       @submit="store.addTask(newTask.trim())"
     />
-    <DragDropList
-      :list="store.tasks"
-      :filterFunc="filterQuery !== 'all' ? filterFunc : undefined"
-      @update:list="getLastUpdate"
-    >
-      <template #item="{ item: task }">
-        <EditableCheckbox
-          v-model:checked="task.done"
-          v-model:value="task.body"
-          name="tasks"
-          @delete="store.deleteTask(task.id)"
-          @update:value="store.editTask($event, task.id)"
-          @update:modelValue="store.toggleTaskStatus(task.id)"
-        />
-      </template>
-    </DragDropList>
+    <div class="list-wrapper">
+      <DragDropList
+        :list="store.tasks"
+        :filterFunc="filterQuery !== 'all' ? filterFunc : undefined"
+        @update:list="getLastUpdate"
+      >
+        <template #item="{ item: task }">
+          <EditableCheckbox
+            v-model:checked="task.done"
+            v-model:value="task.body"
+            name="tasks"
+            @delete="store.deleteTask(task.id)"
+            @update:value="store.editTask($event, task.id)"
+            @update:modelValue="store.toggleTaskStatus(task.id)"
+          />
+        </template>
+      </DragDropList>
+    </div>
     <template v-if="store.tasks.length > 0">
       <TasksDashboard :active="store.totalActive" :done="store.totalDone" />
       <BtnsBar :buttons="buttons" />
@@ -157,4 +159,30 @@ onBeforeMount(() => {
 })
 </script>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.home-view {
+  .list-wrapper {
+    margin-left: -0.5rem;
+    margin-right: -0.5rem;
+    margin-bottom: auto;
+
+    @media (mix-width: 767px) {
+      margin-left: -2rem;
+      margin-right: -0.5rem;
+
+      height: 8rem;
+      overflow-y: auto;
+    }
+  }
+  .tasks-dashboard {
+    @media (mix-width: 767px) {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+    }
+  }
+
+  .caption {
+    margin-top: auto;
+  }
+}
+</style>

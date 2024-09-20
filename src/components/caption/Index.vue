@@ -15,6 +15,8 @@ import CheckMarkIcon from '@/assets/icons/checkmark-round.svg'
 .caption {
   @include body14;
 
+  margin-top: auto;
+
   text-align: center;
   color: var(--text-neutral);
 
