@@ -6,26 +6,33 @@
       ariaLabel="Add new todo"
       @submit="store.addTask(newTask)"
     />
-    <DragDropList :list="store.tasks" :filterFunc="filterQuery !== 'all' ? filterFunc : undefined">
-      <template #item="{ item: item }">
+    <DragDropList
+      :list="store.tasks"
+      :filterFunc="filterQuery !== 'all' ? filterFunc : undefined"
+      @update:list="getLastUpdate"
+    >
+      <template #item="{ item: task }">
         <EditableCheckbox
-          v-model:checked="item.done"
-          v-model:value="item.body"
+          v-model:checked="task.done"
+          v-model:value="task.body"
           name="tasks"
-          @delete="store.deleteTask(item.id)"
-          @update:value="store.editTask($event, item.id)"
-          @update:modelValue="store.toggleTaskStatus(item.id)"
+          @delete="store.deleteTask(task.id)"
+          @update:value="store.editTask($event, task.id)"
+          @update:modelValue="store.toggleTaskStatus(task.id)"
         />
       </template>
     </DragDropList>
-    <TasksDashboard :active="store.totalActive" :done="store.totalDone" />
-    <BtnsBar v-if="store.tasks.length > 0" :buttons="buttons" />
+    <template v-if="store.tasks.length > 0">
+      <TasksDashboard :active="store.totalActive" :done="store.totalDone" />
+      <BtnsBar :buttons="buttons" />
+    </template>
     <Caption v-else />
+    <ToastAlerts />
   </PageContainer>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeMount, ref, watch } from 'vue'
 
 import PageContainer from '@/layout/page-container/Index.vue'
 import TaskForm from '@/components/task-form/Index.vue'
@@ -35,9 +42,22 @@ import TasksDashboard from '@/components/tasks-dashboard/Index.vue'
 import BtnsBar from '@/components/btns-bar/Index.vue'
 import Caption from '@/components/caption/Index.vue'
 
-import { type Task } from '@/_config/models'
+import ToastAlerts from '@/components/ui/toast-alerts/Index.vue'
+import { useAlertStore } from '@/components/ui/toast-alerts/store'
 
+import { type Task } from '@/_config/models'
+import { getTasks, updateTasks } from '@/_config/api'
 import { useTasksStore } from '@/stores/tasks'
+
+import { debounce } from '@/utils/debounce'
+
+const store = useTasksStore()
+const newTask = ref<string>('')
+
+const filterQuery = ref<string>('all')
+const lastUpdate = ref<string>()
+
+// computed control buttons
 
 const buttons = computed(() => {
   return {
@@ -83,10 +103,18 @@ const buttons = computed(() => {
   }
 })
 
-const store = useTasksStore()
-const newTask = ref<string>('')
+// alerts handling
 
-const filterQuery = ref<string>('all')
+const alertsStore = useAlertStore()
+
+const addAlert = (isSuccess: boolean) => {
+  const text = isSuccess ? 'Your todo has beed saved!' : 'Cannot save updates'
+  const status = isSuccess ? 'success' : 'danger'
+
+  alertsStore.addAlert(text, status)
+}
+
+// filter shown tasks
 
 const filterFunc = (item: Task): boolean => {
   switch (filterQuery.value) {
@@ -98,6 +126,35 @@ const filterFunc = (item: Task): boolean => {
       return true
   }
 }
+
+// watching last update for auto save
+
+const getLastUpdate = () => {
+  lastUpdate.value = Date.now().toString()
+}
+
+store.$onAction((action) => {
+  if (action.name === 'updateList') return
+  getLastUpdate()
+})
+
+const autoSave = debounce(() => {
+  updateTasks(store.tasks)
+    .then((response) => {
+      addAlert(true)
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}, 5000)
+
+watch(lastUpdate, (newValue) => {
+  autoSave()
+})
+
+onBeforeMount(() => {
+  getTasks()
+})
 </script>
 
 <style scoped lang="scss"></style>
