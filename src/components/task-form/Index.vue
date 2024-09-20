@@ -39,7 +39,7 @@ const onFormSubmit = () => {
 }
 
 const showBtn = computed<boolean>(() => {
-  return Boolean(newTask.value && newTask.value?.length > 0)
+  return Boolean(newTask.value && newTask.value.trim()?.length > 0)
 })
 
 const btnDisabled = computed<boolean>(() => {
@@ -47,7 +47,7 @@ const btnDisabled = computed<boolean>(() => {
 })
 
 const computedError = computed<string | null>(() => {
-  const isValid = !newTask.value || newTask.value?.length <= props.maxlength
+  const isValid = !newTask.value || newTask.value?.length < props.maxlength
   return props.error || (isValid ? null : `Character limit is ${props.maxlength} characters`)
 })
 </script>

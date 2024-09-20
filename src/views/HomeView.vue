@@ -4,7 +4,7 @@
       v-model:newTask="newTask"
       placeholder="Add new todo..."
       ariaLabel="Add new todo"
-      @submit="store.addTask(newTask)"
+      @submit="store.addTask(newTask.trim())"
     />
     <DragDropList
       :list="store.tasks"
@@ -146,7 +146,7 @@ const autoSave = debounce(() => {
     .catch(() => {
       addAlert(false)
     })
-}, 5000)
+}, 3000)
 
 watch(lastUpdate, (newValue) => {
   autoSave()
