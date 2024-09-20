@@ -6,9 +6,9 @@
         <span
           class="editable"
           :contenteditable="editable"
-          @focusout="submitEdit"
-          @keydown.enter="submitEdit"
-          @keydown.escape="rejectEdit"
+          @blur="onBlur"
+          @keydown.enter="onEnter"
+          @keydown.escape="onEsc"
           ref="editableRef"
           >{{ value }}
         </span>
@@ -70,19 +70,35 @@ const edit = () => {
 
 const submitEdit = (event: Event) => {
   const edited = (event.target as HTMLElement)?.innerText.trim()
-  editableRef.value?.blur()
+
+  if (edited) {
+    emit('update:value', edited)
+  } else {
+    emit('delete')
+  }
 
   switchIsEditable()
-
-  emit('update:value', edited)
 }
 
 const rejectEdit = (event: Event) => {
   const target = event.target as HTMLElement
   target.innerText = value.value || ''
-  editableRef.value?.blur()
 
   switchIsEditable()
+}
+
+const onEnter = (event: Event) => {
+  submitEdit(event)
+  editableRef.value?.blur()
+}
+
+const onEsc = (event: Event) => {
+  rejectEdit(event)
+  editableRef.value?.blur()
+}
+
+const onBlur = (event: Event) => {
+  if (editable.value) submitEdit(event)
 }
 </script>
 
