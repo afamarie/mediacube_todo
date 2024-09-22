@@ -29,21 +29,13 @@ defineProps<{
 @import '@/assets/styles/mixins.scss';
 
 .btns-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  align-items: center;
 
   .btn-wrapper {
     display: flex;
     justify-content: center;
-
-    &:first-child {
-      margin-right: 0.6rem;
-    }
-
-    &:last-child {
-      margin-left: 0.6rem;
-    }
   }
 
   button {
@@ -80,10 +72,13 @@ defineProps<{
   }
 
   @media (max-width: 767px) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
     .btn-wrapper:first-child,
     .btn-wrapper:last-child {
       flex-basis: 100%;
-      width: fit-content;
       margin: 0.5rem auto;
     }
   }

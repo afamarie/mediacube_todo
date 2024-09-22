@@ -30,8 +30,6 @@ const emit = defineEmits(['update:list'])
 
 <style scoped lang="scss">
 .drag-drop-list {
-  padding-top: 1rem;
-  padding-bottom: 1rem;
   padding-left: 0;
 
   li + li {

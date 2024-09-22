@@ -118,7 +118,7 @@ const onBlur = (event: Event) => {
   }
 
   .editable-wrapper {
-    @include body14;
+    @include input16;
 
     padding: 0.25rem;
     max-width: 100%;

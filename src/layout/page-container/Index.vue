@@ -38,7 +38,7 @@ defineProps<{
   flex-grow: 1;
 
   margin: 0 auto;
-  padding: 0 1em;
+  padding: 0 1em 1em;
   width: 100%;
   max-width: 1140px;
 
@@ -65,6 +65,10 @@ defineProps<{
     background-color: var(--bg-basic);
 
     transition: background-color var(--trans-default);
+
+    @media (min-width: 768px) {
+      max-height: 800px;
+    }
 
     @media (max-width: 767px) {
       padding-left: 1rem;
@@ -97,7 +101,7 @@ defineProps<{
     flex-direction: column;
     flex-grow: 1;
 
-    width: clamp(228px, 50vw, 410px);
+    width: clamp(228px, 50vw, 450px);
 
     @media (max-width: 767px) {
       width: 100%;

@@ -10,6 +10,12 @@
   line-height: 16px;
 }
 
+@mixin input16 {
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
 @mixin button13 {
   font-size: 13px;
   font-weight: 600;
