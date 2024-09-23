@@ -1,16 +1,19 @@
 <template>
   <label class="theme-switcher">
-    <span class="label">{{ isDark ? 'nightmode' : 'daymode' }}</span>
+    <span class="label" aria-hidden="true">{{ isDark ? 'nightmode' : 'daymode' }}</span>
     <span class="input-wrapper">
       <input
         v-model="isDark"
         value="dark"
         name="theme"
         type="checkbox"
-        :aria-label="'switch theme to ' + isDark ? 'daymode' : 'nightmode'"
-        @change="changeTheme" />
-      <span class="icon-wrapper"> <component :is="isDark ? Moon : Sun" aria-hidden="true" /> </span
-    ></span>
+        :aria-label="isDark ? 'switch theme to daymode' : 'switch theme to nightmode'"
+        @change="changeTheme"
+      />
+      <span class="icon-wrapper">
+        <component :is="isDark ? Moon : Sun" aria-hidden="true" />
+      </span>
+    </span>
   </label>
 </template>
 

@@ -1,7 +1,14 @@
 <template>
   <div class="editable-checkbox">
-    <div class="input-wrapper" :aria-label="value">
-      <input v-model="checked" :value="value" :name="name" type="checkbox" :disabled="disabled" />
+    <div class="input-wrapper">
+      <input
+        v-model="checked"
+        :value="value"
+        :name="name"
+        type="checkbox"
+        :disabled="disabled"
+        :aria-label="value"
+      />
       <span class="editable-wrapper">
         <span
           class="editable"
@@ -16,10 +23,10 @@
       </span>
     </div>
     <div class="btns">
-      <button class="edit" :class="{ editable }" @click="edit">
+      <button class="edit" :class="{ editable }" @click="edit" :aria-label="'edit ' + value">
         <PencilIcon />
       </button>
-      <button class="delete" @click="$emit('delete')">
+      <button class="delete" @click="$emit('delete')" :aria-label="'delete ' + value">
         <BinIcon />
       </button>
     </div>
