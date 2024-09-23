@@ -7,7 +7,8 @@
     ghost-class="ghost"
     direction="vertical"
     handle=".handle"
-    @onEnd="$emit('update:list')"
+    @start="updateCopy"
+    @end="onChange($event)"
   >
     <li v-for="(item, i) in list" :key="i" v-show="filterFunc ? filterFunc(item) : true">
       <DragDropIcon class="drag-icon handle" width="16" height="16" aria-hidden="true" />
@@ -18,14 +19,29 @@
 
 <script setup lang="ts">
 import DragDropIcon from '@/assets/icons/drag-drop.svg'
-import { VueDraggable } from 'vue-draggable-plus'
+import { ref } from 'vue'
+import { VueDraggable, type SortableEvent } from 'vue-draggable-plus'
 
 const props = defineProps<{
   filterFunc?: (item: any) => boolean
 }>()
 
 const list = defineModel<any[]>('list', { default: [] })
-const emit = defineEmits(['update:list'])
+const listCopy = ref<any[]>() // copy prev version to handle updates
+
+const emit = defineEmits(['replace'])
+
+const updateCopy = () => {
+  listCopy.value = list.value
+}
+
+const onChange = (event: SortableEvent) => {
+  if (event.oldIndex !== event.newIndex) {
+    emit('replace', event.oldIndex, event.newIndex, listCopy.value)
+
+    updateCopy()
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -74,7 +90,7 @@ const emit = defineEmits(['update:list'])
     opacity: 1;
   }
 
-  @media (max-width: 767px) {
+  @media (max-width: 1024px) {
     .drag-icon {
       opacity: 0.5;
     }

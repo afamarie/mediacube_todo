@@ -4,22 +4,22 @@
       v-model:newTask="newTask"
       placeholder="Add new todo..."
       ariaLabel="Add new todo"
-      @submit="store.addTask(newTask.trim())"
+      @submit="submitTask"
     />
     <div class="list-wrapper">
       <DragDropList
         :list="store.tasks"
         :filterFunc="filterQuery !== 'all' ? filterFunc : undefined"
-        @update:list="getLastUpdate"
+        @replace="replaceTasks"
       >
         <template #item="{ item: task }">
           <EditableCheckbox
             v-model:checked="task.done"
             v-model:value="task.body"
             name="tasks"
-            @delete="store.deleteTask(task.id)"
-            @update:value="store.editTask($event, task.id)"
-            @update:modelValue="store.toggleTaskStatus(task.id)"
+            @delete="deleteTask(task.id)"
+            @update:value="editTask(task.id, $event)"
+            @update:checked="toggleTaskStatus(task.id, $event)"
           />
         </template>
       </DragDropList>
@@ -34,7 +34,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, watch } from 'vue'
+import { computed, onBeforeMount, ref } from 'vue'
 
 import PageContainer from '@/layout/page-container/Index.vue'
 import TaskForm from '@/components/task-form/Index.vue'
@@ -45,30 +45,23 @@ import BtnsBar from '@/components/btns-bar/Index.vue'
 import Caption from '@/components/caption/Index.vue'
 
 import ToastAlerts from '@/components/ui/toast-alerts/Index.vue'
-import { useAlertStore } from '@/components/ui/toast-alerts/store'
 
 import { type Task } from '@/_config/models'
-import { getTasks, updateTasks } from '@/_config/api'
 import { useTasksStore } from '@/stores/tasks'
-
-import { debounce } from '@/utils/debounce'
+import { useAlertStore } from '@/components/ui/toast-alerts/store'
 
 const store = useTasksStore()
 const newTask = ref<string>('')
 
 const filterQuery = ref<string>('all')
-const lastUpdate = ref<string>()
 
 // computed control buttons
-
 const buttons = computed(() => {
   return {
     checkAll: {
       name: 'Check All',
-      action: () => {
-        store.markAllDone()
-      },
-      show: true
+      action: () => markAllDone(),
+      show: store.tasks.length > 0
     },
     showAll: {
       name: 'All',
@@ -96,10 +89,7 @@ const buttons = computed(() => {
     },
     clearCompleted: {
       name: 'Clear completed',
-      action: () => {
-        store.clearDone()
-        filterQuery.value = 'all'
-      },
+      action: () => clearDone(),
       show: store.tasks.some((el) => el.done)
     }
   }
@@ -116,6 +106,100 @@ const addAlert = (isSuccess: boolean) => {
   alertsStore.addAlert(text, status)
 }
 
+// check connection to show alerts if changes cannot be saved
+
+const checkConnection = () => {
+  if (!navigator.onLine) {
+    addAlert(false)
+  }
+}
+
+const markAllDone = () => {
+  checkConnection()
+
+  store
+    .markAllDone()
+    .then(() => {
+      addAlert(true)
+      filterQuery.value = 'all'
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}
+
+const clearDone = () => {
+  checkConnection()
+  store
+    .clearDone()
+    .then(() => {
+      addAlert(true)
+      filterQuery.value = 'all'
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}
+
+const submitTask = (taskBody: string) => {
+  checkConnection()
+  store
+    .addTask(taskBody)
+    .then(() => {
+      addAlert(true)
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}
+
+const deleteTask = (id: string) => {
+  checkConnection()
+  store
+    .deleteTask(id)
+    .then(() => {
+      addAlert(true)
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}
+const editTask = (id: string, body: string) => {
+  checkConnection()
+  store
+    .updateTask(id, { body })
+    .then(() => {
+      addAlert(true)
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}
+const toggleTaskStatus = (id: string, done: boolean) => {
+  checkConnection()
+  store
+    .updateTask(id, { done })
+    .then(() => {
+      addAlert(true)
+    })
+    .catch(() => {
+      addAlert(false)
+    })
+}
+
+const replaceTasks = (oldIndex: number, newIndex: number, prevList: Task[]) => {
+  checkConnection()
+  store
+    .replace(oldIndex, newIndex, prevList)
+    .then(() => {
+      addAlert(true)
+    })
+    .catch(() => {
+      addAlert(false)
+      store.tasks = [...prevList]
+    })
+}
+
 // filter shown tasks
 
 const filterFunc = (item: Task): boolean => {
@@ -129,53 +213,40 @@ const filterFunc = (item: Task): boolean => {
   }
 }
 
-// watching last update for auto save
-
-const getLastUpdate = () => {
-  lastUpdate.value = Date.now().toString()
-}
-
-store.$onAction((action) => {
-  if (action.name === 'updateList') return
-  getLastUpdate()
-})
-
-const autoSave = debounce(() => {
-  updateTasks(store.tasks)
-    .then((response) => {
-      addAlert(true)
-    })
-    .catch(() => {
-      addAlert(false)
-    })
-}, 3000)
-
-watch(lastUpdate, (newValue) => {
-  autoSave()
-})
-
 onBeforeMount(() => {
-  getTasks()
+  store.fetchTasks()
 })
 </script>
 
 <style scoped lang="scss">
 .home-view {
   .list-wrapper {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
-    margin-bottom: auto;
+    margin: 1rem -0.5rem auto -0.5rem;
 
-    @media (mix-width: 767px) {
+    @media (min-width: 768px) {
       margin-left: -2rem;
       margin-right: -0.5rem;
 
-      height: 8rem;
+      max-height: 10rem;
       overflow-y: auto;
+    }
+
+    &::-webkit-scrollbar {
+      width: 0.5em;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: var(--bg-gradient);
+      border-radius: 0.25rem;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--text-transparent);
+      border-radius: 0.25rem;
     }
   }
   .tasks-dashboard {
-    @media (mix-width: 767px) {
+    @media (mix-width: 768px) {
       margin-top: 1rem;
       margin-bottom: 1rem;
     }
