@@ -1,6 +1,6 @@
 <template>
   <div class="editable-checkbox">
-    <label>
+    <div class="input-wrapper" :aria-label="value">
       <input v-model="checked" :value="value" :name="name" type="checkbox" :disabled="disabled" />
       <span class="editable-wrapper">
         <span
@@ -9,11 +9,12 @@
           @blur="onBlur"
           @keydown.enter="onEnter"
           @keydown.escape="onEsc"
+          @click="onClick"
           ref="editableRef"
           >{{ value }}
         </span>
       </span>
-    </label>
+    </div>
     <div class="btns">
       <button class="edit" :class="{ editable }" @click="edit">
         <PencilIcon />
@@ -87,6 +88,13 @@ const rejectEdit = (event: Event) => {
   switchIsEditable()
 }
 
+// pretends input label behavior if editable is false
+const onClick = () => {
+  if (!editable.value) {
+    checked.value = !checked.value
+  }
+}
+
 const onEnter = (event: Event) => {
   submitEdit(event)
   editableRef.value?.blur()
@@ -110,11 +118,13 @@ const onBlur = (event: Event) => {
   justify-content: space-between;
   flex-grow: 1;
 
-  label {
+  .input-wrapper {
     display: grid;
     grid-template-columns: 1.6rem 1fr;
     align-items: center;
     gap: 0.5rem;
+
+    cursor: pointer;
   }
 
   .editable-wrapper {
@@ -129,6 +139,10 @@ const onBlur = (event: Event) => {
 
   .editable-wrapper:focus-within {
     background-color: var(--bg-transparent);
+  }
+
+  .editable[contenteditable='true'] {
+    cursor: text;
   }
 
   .editable:focus {

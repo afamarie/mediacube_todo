@@ -1,5 +1,5 @@
 <template>
-  <form class="task-form" @submit.prevent="onFormSubmit">
+  <form class="task-form" @submit.prevent="onFormSubmit" @keydown.escape="clearForm">
     <input
       v-model="newTask"
       :placeholder="placeholder"
@@ -34,7 +34,13 @@ const newTask = defineModel<string>('newTask')
 const emit = defineEmits(['submit'])
 
 const onFormSubmit = () => {
-  emit('submit')
+  if (newTask.value && newTask.value.trim()?.length > 0) {
+    emit('submit', newTask.value.trim())
+    clearForm()
+  }
+}
+
+const clearForm = () => {
   newTask.value = ''
 }
 
@@ -61,7 +67,7 @@ const computedError = computed<string | null>(() => {
   gap: 1rem;
 
   input {
-    @include body14;
+    @include input16;
 
     flex: 1 0 auto;
 
